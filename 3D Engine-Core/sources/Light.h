@@ -56,8 +56,8 @@ public:
 		this->constant = constant;
 		this->linear = linear;
 		this->quadratic = quadratic;
-		this->ambient = glm::vec3(0.1f, 0.1f, 0.1f);
-		this->diffuse = glm::vec3(0.2f, 0.2f, 0.2f);
+		this->ambient = glm::vec3(0.2f, 0.2f, 0.2f);
+		this->diffuse = glm::vec3(0.8f, 0.8f, 0.8f);
 		this->specular = glm::vec3(0.5f, 0.5f, 0.5f);
 		this->viewPos = viewpos;
 		this->color = color * this->intensity;

@@ -57,10 +57,12 @@ public:
 	static float change_value;
 
 	//Sky-box
-	float *cubeVertices;
 	unsigned int cubemapTexture;
 	unsigned int skyboxVAO;
 	unsigned int skyboxVBO;
+
+	// Ground 
+	unsigned int groundVAO, groundVBO, groundTexture;
 
 	//Camera
 	Camera camera;
@@ -77,7 +79,7 @@ public:
 	float farPlane;
 
 	// Sky box
-	static float skyboxVertices[];
+	// static float skyboxVertices[];
 
 	//Shaders
 	std::vector<Shader*> shaders;
@@ -124,7 +126,7 @@ public:
 
 	void updateUniforms();
 
-	//Static variables
+	void initGround();
 
 public:
 	//Constructors / Destructors

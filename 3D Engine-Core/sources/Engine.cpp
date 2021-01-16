@@ -2,6 +2,8 @@
 #include "Engine.h"
 #include "Texture.h"
 #include "externals/imgui/imgui_impl_glfw.h"
+#include "../sources/Global_Variable.h"
+
 
 // Private functions
 void Engine::initGLFW()
@@ -102,14 +104,18 @@ void Engine::initShaders()
 	Shader* ourShader1 = new Shader("resources/shaders/skybox_vs.glsl", "resources/shaders/skybox_fs.glsl");
 	this->shaders.push_back(ourShader1);
 	//this->shaders.push_back(lampShader);
+
+
+	Shader* ourShader2 = new Shader("resources/shaders/ground_vs.glsl", "resources/shaders/skybox_fs.glsl");
+	this->shaders.push_back(ourShader2);
 }
 
 void Engine::initModels()
 {
 	// Model ourModel("resources/objects/FarmhouseMaya/farmhouse_obj.obj");
 	//Model ourModel("resources/objects/backpack/nanosuit.obj");
-	//this->models.push_back(new Model("resources/objects/nanosuit/nanosuit.obj"));
-	this->models.push_back(new Model("resources/objects/bed_room/Bedroom 11.obj"));
+	this->models.push_back(new Model("resources/objects/nanosuit/nanosuit.obj"));
+	//this->models.push_back(new Model("resources/objects/bed_room/Bedroom 11.obj"));
 }
 
 void Engine::initPointLights()
@@ -306,27 +312,30 @@ void Engine::ImGuiRender()
 	{
 		//static float f = 0.0f;
 		//static int counter = 0;
-		//ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-		//ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
 		//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 		//ImGui::Checkbox("Another Window", &show_another_window);
+		glm::vec3 Trans_Val = this->models[0]->position;
+		ImGui::SliderFloat3("Translation", &Trans_Val.x, -100.0f, 100.0f);          
+		models[0]->position = Trans_Val;
 
-		float trans_x = this->models[0]->position.x;
-		ImGui::SliderFloat("float", &trans_x, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		this->Engine::change_value = trans_x;
-		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+		ImGui::SliderFloat3("Scalization", &Scale_Var.x, 0.0f, 5.0f);
+		models[0]->scale = Scale_Var;
 
-		float rotation_val = this->models[0]->position.x;
-		ImGui::SliderFloat("Rotation", &rotation_val, 0.0f, 0.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		this->Engine::change_value = rotation_val;
-		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+		ImGui::SliderFloat3("Rotation", &Rotate_Var.x, 0, 1.0f);
+		models[0]->rotation = Rotate_Var;
+
+		ImGui::SliderFloat("Radian", &Radian, 0.0f, 360.0f);
+		//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
 
 		//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 		//	counter++;
 		//ImGui::SameLine();
 		//ImGui::Text("counter = %d", counter);
 		//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		//ImGui::End();
+		ImGui::End();
 	}
 
 	// Rendering ImGui
@@ -360,9 +369,22 @@ void Engine::updateUniforms()
 
 	// Transform the loaded model
 	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f)); // translate it down so it's at the center of the scene
-	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	// it's a bit too big for our scene, so scale it down
-	// model = glm::rotate(model, glm::radians(Engine::change_value), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, this->models[0]->position); // translate it down so it's at the center of the scene
+	model = glm::scale(model, this->models[0]->scale);	// it's a bit too big for our scene, so scale it down
+	model = glm::rotate(model, Radian, glm::vec3(0.0f,1.0f,0.0f));
+
+	// Transform the loaded model
+	//for (auto& i : this->models)
+	//{
+	//	glm::mat4 model;
+	//	model = glm::translate(model, i->position); // translate it down so it's at the center of the scene
+	//	model = glm::scale(model, i->scale);	// it's a bit too big for our scene, so scale it down
+	//	model = glm::rotate(model, glm::radians(Engine::change_value), i->rotation);
+
+
+	//	// Send updated uniform to shader program
+	//	this->shaders[0]->setUniformMat4("model", model, false);
+	//}
 
 	// Update change_value for rotation
 	Engine::change_value += 0.05f;
@@ -373,7 +395,6 @@ void Engine::updateUniforms()
 	//Update framebuffer size and projection matrix
 	glfwGetFramebufferSize(this->window, &this->framebufferWidth, &this->framebufferHeight);
 }
-// Skybox
 
 void Engine::initSkyBox()
 {
@@ -382,7 +403,7 @@ void Engine::initSkyBox()
 	glGenBuffers(1, &skyboxVBO);
 	glBindVertexArray(skyboxVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-	glBufferData(GL_ARRAY_BUFFER, 432, &Engine::skyboxVertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
@@ -402,6 +423,30 @@ void Engine::initSkyBox()
 	this->shaders[1]->setInt("skybox", 0);
 }
 
+void Engine::initGround()
+{
+	// skybox VAO
+	glGenVertexArrays(1, &groundVAO);
+	glGenBuffers(1, &groundVBO);
+	glBindVertexArray(groundVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, groundVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GrassVertices), GrassVertices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	// load textures
+	string path = "resources/textures/grass.png";
+	this->groundTexture = Model::loadTexture(path.c_str());
+
+	// -------------
+
+	this->shaders[2]->use();
+}
+
 // Render function
 void Engine::render()
 {
@@ -418,26 +463,54 @@ void Engine::render()
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	//Update the uniforms
-	this->updateUniforms();
+	// **************************** Render Model ******************************
+	///////////////////////////////////////////////////////////////////////////
 
-	this->shaders[0]->use();
+	glPushMatrix();
+	//Update the uniforms : Send model, view, projection matrix to shader program
+	this->updateUniforms();
 	// Render models
 	for (auto& i : this->models)
-		i->Draw(*this->shaders[0]);
+		i->Draw(*this->shaders[0]);	
+	// this->shaders[0]->unUse();
+	glPopMatrix();
+	glBindVertexArray(0);
+	this->shaders[0]->unUse();
 
 
+	this->shaders[2]->use();
+	// draw scene as normal
+	glm::mat4 model_m = glm::mat4(1.0f);
+	glm::mat4 view = camera.GetViewMatrix();
+	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
 
-	this->shaders[1]->use();
+	// *********************** Render Ground *********************************
+	///////////////////////////////////////////////////////////////////////////
+	//glBindVertexArray(0);
+
+
+	//this->shaders[2]->use();
+	//this->shaders[2]->setUniformMat4("model", model_m, false);
+	//this->shaders[2]->setUniformMat4("view", view, false);
+	//this->shaders[2]->setUniformMat4("projection", projection, false);
+	glBindVertexArray(this->groundVAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, this->groundTexture);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+
+
+	// *********************** Render Skybox ******************************
+	///////////////////////////////////////////////////////////////////////////
+
 
 	// Render Sky box
 	// Draw skybox as last
 	glDepthFunc(GL_LEQUAL);  // Change depth function so depth test passes when values are equal to depth buffer's content
 	this->shaders[1]->use();
-	glm::mat4 view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+	view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
 	// this->shaders[1]->setUniformMat4("model", view, false);
 	this->shaders[1]->setUniformMat4("view", view, false);
-	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
 	this->shaders[1]->setUniformMat4("projection", projection, false);
 
 	// skybox cube
@@ -521,4 +594,5 @@ Engine::Engine(
 	this->initUniforms();
 	this->initSkyBox();
 	this->initIMGUI();
+	this->initGround();
 }

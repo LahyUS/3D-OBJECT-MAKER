@@ -41,7 +41,7 @@ public:
 
 	static GLuint LoadCubemap(vector<std::string> faces);
 
-	unsigned int loadTexture(char const* path);
+	static unsigned int loadTexture(char const* path);
 	// loads a cubemap texture from 6 individual texture faces
 	// order:
 	// +X (right)
