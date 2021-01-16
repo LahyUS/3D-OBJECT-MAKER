@@ -12,6 +12,7 @@
 class Shader
 {
 public:
+	unsigned int ID;
 	// The program ID
 	unsigned int Program;
 	// Constructor reads and builds the shader
@@ -20,6 +21,12 @@ public:
 	void use();
 	// Un use the program
 	void unUse();
+
+	// ------------------------------------------------------------------------
+	void setInt(const std::string& name, int value) const
+	{
+		glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+	}
 	
 	//Set uniform1i
 	void setUniform1i(const std::string &nameUniform, const int value) const;

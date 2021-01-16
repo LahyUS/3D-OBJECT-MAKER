@@ -19,6 +19,58 @@ const unsigned int SCR_HEIGHT = 600;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 float Engine::mouseScaleScroll = 0.0f;
+float Engine::change_value = 0.0f;
+
+
+bool Engine::show_demo_window = true;
+bool Engine::show_another_window = false;
+ImVec4 Engine::clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+float Engine::skyboxVertices[] = {
+    // positions          
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
+
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
+
+        -1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, -1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, 1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f
+};
+
 int main()
 {
 	Engine myEngine("DEMO_3D",
@@ -28,6 +80,7 @@ int main()
 
 	int frames = 0;
 	float timer = 0.0f;
+
 	//MAIN LOOP
 	while (!myEngine.getWindowShouldClose())
 	{

@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="sources\Engine.cpp" />
     <ClCompile Include="sources\externals\imgui\imgui.cpp" />
     <ClCompile Include="sources\externals\imgui\imgui_demo.cpp" />
     <ClCompile Include="sources\externals\imgui\imgui_draw.cpp" />
@@ -320,6 +321,7 @@
     <ClInclude Include="sources\Mesh.h" />
     <ClInclude Include="sources\Model.h" />
     <ClInclude Include="sources\Shader.h" />
+    <ClInclude Include="sources\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\lamp.fs.glsl" />
@@ -328,6 +330,8 @@
     <None Include="resources\shaders\modelLoading.vs.glsl" />
     <None Include="resources\shaders\multipleLighting.fs.glsl" />
     <None Include="resources\shaders\pointLighting.fs.glsl" />
+    <None Include="resources\shaders\skybox_vs.glsl" />
+    <None Include="resources\shaders\skybox_fs.glsl" />
     <None Include="resources\shaders\spotlightLighting.fs.glsl" />
     <None Include="resources\shaders\vertLighting.vs.glsl" />
     <None Include="sources\externals\glm\glm\detail\func_common.inl" />

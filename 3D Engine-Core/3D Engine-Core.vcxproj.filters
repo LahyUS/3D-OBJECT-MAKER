@@ -54,6 +54,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sources\Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sources\Shader.h">
@@ -551,6 +554,9 @@
     <ClInclude Include="sources\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sources\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="sources\externals\glm\glm\detail\func_common.inl">
@@ -903,5 +909,7 @@
     <None Include="resources\shaders\pointLighting.fs.glsl" />
     <None Include="resources\shaders\vertLighting.vs.glsl" />
     <None Include="resources\shaders\spotlightLighting.fs.glsl" />
+    <None Include="resources\shaders\skybox_fs.glsl" />
+    <None Include="resources\shaders\skybox_vs.glsl" />
   </ItemGroup>
 </Project>

@@ -48,7 +48,7 @@ protected:
 	glm::vec3 viewPos;
 
 public:
-	PointLight(glm::vec3 color,glm::vec3 viewpos, glm::vec3 position, float intensity = 1.f,
+	PointLight(glm::vec3 color, float intensity, glm::vec3 viewpos, glm::vec3 position,
 		float constant = 1.f, float linear = 0.045f, float quadratic = 0.0075f)
 		: Light(intensity, color)
 	{
@@ -60,7 +60,7 @@ public:
 		this->diffuse = glm::vec3(0.2f, 0.2f, 0.2f);
 		this->specular = glm::vec3(0.5f, 0.5f, 0.5f);
 		this->viewPos = viewpos;
-		this->color = color;
+		this->color = color * this->intensity;
 	}
 
 	glm::vec3 getColor()
@@ -86,7 +86,7 @@ public:
 	void sendToShader(Shader& program)
 	{
 		program.setUniformVec3("light.position", this->position);
-		program.setUniformVec3("light.viewPos", this->viewPos);
+		program.setUniformVec3("viewPos", this->viewPos);
 		program.setUniformVec3("light.color", this->color);
 		program.setUniformVec3("light.ambient", this->ambient);
 		program.setUniformVec3("light.diffuse", this->diffuse);
