@@ -39,6 +39,20 @@ public:
 	// draws the model, and thus all its meshes
 	void Draw(Shader shader);
 
+	static GLuint LoadCubemap(vector<std::string> faces);
+
+	unsigned int loadTexture(char const* path);
+	// loads a cubemap texture from 6 individual texture faces
+	// order:
+	// +X (right)
+	// -X (left)
+	// +Y (top)
+	// -Y (bottom)
+	// +Z (front) 
+	// -Z (back)
+	// -------------------------------------------------------
+	unsigned int loadCubemap(vector<std::string> faces);
+
 private:
 	/*  Functions   */
 	// loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
