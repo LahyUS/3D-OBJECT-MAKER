@@ -316,6 +316,7 @@
     <ClInclude Include="sources\externals\imgui\imstb_textedit.h" />
     <ClInclude Include="sources\externals\imgui\imstb_truetype.h" />
     <ClInclude Include="sources\externals\stb_image\stb_image.h" />
+    <ClInclude Include="sources\Global_Variable.h" />
     <ClInclude Include="sources\Light.h" />
     <ClInclude Include="sources\Material.h" />
     <ClInclude Include="sources\Mesh.h" />
@@ -324,6 +325,7 @@
     <ClInclude Include="sources\Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\ground_vs.glsl" />
     <None Include="resources\shaders\lamp.fs.glsl" />
     <None Include="resources\shaders\lamp.vs.glsl" />
     <None Include="resources\shaders\modelLoading.fs.glsl" />

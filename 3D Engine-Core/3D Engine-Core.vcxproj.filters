@@ -557,6 +557,9 @@
     <ClInclude Include="sources\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sources\Global_Variable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="sources\externals\glm\glm\detail\func_common.inl">
@@ -911,5 +914,6 @@
     <None Include="resources\shaders\spotlightLighting.fs.glsl" />
     <None Include="resources\shaders\skybox_fs.glsl" />
     <None Include="resources\shaders\skybox_vs.glsl" />
+    <None Include="resources\shaders\ground_vs.glsl" />
   </ItemGroup>
 </Project>

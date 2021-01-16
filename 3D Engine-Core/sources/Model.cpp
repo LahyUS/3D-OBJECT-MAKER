@@ -5,6 +5,9 @@
 Model::Model(string const &path, bool gamma) : gammaCorrection(gamma)
 {
 	loadModel(path);
+	this->position = glm::vec3(0.0f, 0.0f, 0.0f);
+	this->scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	this->rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 void Model::Draw(Shader shader)
@@ -198,38 +201,32 @@ static unsigned int TextureFromFile(const char *path, const string &directory, b
 	return textureID;
 }
 
-GLuint Model::LoadCubemap(vector<std::string> faces)
+unsigned int Model::LoadCubemap(vector<std::string> faces)
 {
-	GLuint textureID;
+	unsigned int textureID;
 	glGenTextures(1, &textureID);
-
-	int imageWidth, imageHeight;
-	unsigned char* image;
-
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
-	for (GLuint i = 0; i < faces.size(); i++)
+	int width, height, nrComponents;
+	for (unsigned int i = 0; i < faces.size(); i++)
 	{
-		image = stbi_load(faces[i].c_str(), &imageWidth, &imageHeight, 0, 0);
-		if (!image)
+		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrComponents, 0);
+		if (data)
 		{
-			cout << "Cannot load texture from" << faces[i].c_str() << endl;
-			stbi_image_free(image);
-
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			stbi_image_free(data);
 		}
 		else
 		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 4, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-			stbi_image_free(image);
+			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+			stbi_image_free(data);
 		}
-
 	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	return textureID;
 }
