@@ -302,11 +302,6 @@ void Engine::initIMGUI()
 
 void Engine::ImGuiRender()
 {
-	// Start the Dear ImGui frame
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
 		//static float f = 0.0f;
@@ -418,6 +413,11 @@ void Engine::render()
 	glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// Start the Dear ImGui frame
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
 	//Update the uniforms
 	this->updateUniforms();
 
@@ -426,7 +426,7 @@ void Engine::render()
 	for (auto& i : this->models)
 		i->Draw(*this->shaders[0]);
 
-	//ImGuiRender();
+
 
 	this->shaders[1]->use();
 
@@ -448,6 +448,7 @@ void Engine::render()
 	glBindVertexArray(0);
 	glDepthFunc(GL_LESS); // set depth function back to default
 
+	ImGuiRender();
 
 // End Draw
 	glfwSwapBuffers(window);
