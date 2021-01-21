@@ -1,9 +1,8 @@
 #pragma once
 #include "Engine.h"
-#include "Texture.h"
 #include "externals/imgui/imgui_impl_glfw.h"
+#include "externals/imgui/ImGuiFileDialog/ImGuiFileDialog.h"
 #include "../sources/Global_Variable.h"
-
 
 // Private functions
 void Engine::initGLFW()
@@ -23,8 +22,6 @@ void Engine::initWindow(const char* title, bool resizable)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, this->GL_VERSION_MAJOR);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, this->GL_VERSION_MINOR);
 	glfwWindowHint(GLFW_RESIZABLE, resizable);
-
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); MAC OS
 
 	this->window = glfwCreateWindow(this->WINDOW_WIDTH, this->WINDOW_HEIGHT, title, NULL, NULL);
 	std::cout << "3D Project with OpenGL - Console Debug" << std::endl << std::endl;
@@ -81,8 +78,7 @@ void Engine::initOpenGLOptions()
 // init matrices
 void Engine::initMatrices()
 {
-	this->ViewMatrix = glm::mat4(1.f);
-	this->ViewMatrix = glm::lookAt(this->camPosition, this->camPosition + this->camFront, this->worldUp);
+	this->ViewMatrix = camera.GetViewMatrix();
 
 	this->ProjectionMatrix = glm::mat4(1.f);
 	this->ProjectionMatrix = glm::perspective(
@@ -111,10 +107,7 @@ void Engine::initShaders()
 
 void Engine::initModels()
 {
-	// Model ourModel("resources/objects/FarmhouseMaya/farmhouse_obj.obj");
-	//Model ourModel("resources/objects/backpack/nanosuit.obj");
-	//this->models.push_back(new Model("resources/objects/nanosuit/nanosuit.obj"));
-	this->models.push_back(new Model("resources/objects/bed_room/Bedroom 11.obj"));
+	this->models.push_back(new Model("resources/objects/nanosuit/nanosuit.obj"));
 }
 
 void Engine::initPointLights()
@@ -139,8 +132,6 @@ void Engine::initUniforms()
 		pl->sendToShader(*this->shaders[0]);
 	}
 }
-
-//Static variables
 
 Engine::~Engine()
 {
@@ -188,11 +179,6 @@ void Engine::updateKeyboardInput()
 		this->camera.ProcessKeyboard(LEFT, this->dt);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		this->camera.ProcessKeyboard(RIGHT, this->dt);
-
-	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
-		this->camPosition.y -= 0.05f;
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		this->camPosition.y += 0.05f;
 }
 
 // glfw: whenever the mouse moves, this callback is called
@@ -281,10 +267,6 @@ void Engine::update()
 	//UPDATE INPUT ---
 	this->updateDt();
 	this->updateInput();
-
-	//this->models[0]->rotate(glm::vec3(0.f, 1.f, 0.f));
-	//this->models[1]->rotate(glm::vec3(0.f, 1.f, 0.f));
-	//this->models[2]->rotate(glm::vec3(0.f, 1.f, 0.f));
 }
 
 void Engine::initIMGUI()
@@ -311,9 +293,11 @@ void Engine::ImGuiRender()
 	{
 		//static float f = 0.0f;
 		//static int counter = 0;
-		ImGui::Begin("Trasnformation");                         
+		ImGui::Begin("Trasnformation");
+		ImGui::SetWindowPos(ImVec2(0, 0));
+		ImGui::SetWindowSize(ImVec2(400, 150));
 		glm::vec3 Trans_Val = this->models[0]->position;
-		ImGui::SliderFloat3("Translation", &Trans_Val.x, -100.0f, 100.0f);          
+		ImGui::SliderFloat3("Translation", &Trans_Val.x, -100.0f, 100.0f);
 		models[0]->position = Trans_Val;
 
 		ImGui::SliderFloat3("Scalization", &Scale_Var.x, 0.0f, 5.0f);
@@ -323,14 +307,32 @@ void Engine::ImGuiRender()
 		models[0]->rotation = Rotate_Var;
 
 		ImGui::SliderFloat("Radian", &Radian, 0.0f, 360.0f);
-		//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
+		ImGui::End();
+		// open Dialog Simple
+		ImGui::Begin("Choose Object");
+		ImGui::SetWindowPos(ImVec2(0, 160));
+		ImGui::SetWindowSize(ImVec2(400, 80));
+		if (ImGui::Button("Pick a Object model"))
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".obj", ".");
 
-		//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-		//	counter++;
-		//ImGui::SameLine();
-		//ImGui::Text("counter = %d", counter);
-		//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		// display
+		if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey"))
+		{
+			// action if OK
+			if (ImGuiFileDialog::Instance()->IsOk())
+			{
+				std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+				std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+				filePathName.replace(filePathName.find_last_of('\\'), 1, std::string("/"));
+				std::cout << filePathName;
+				this->models.push_back(new Model(filePathName));
+				// action
+			}
+
+			// close
+			ImGuiFileDialog::Instance()->Close();
+		}
 		ImGui::End();
 	}
 
@@ -362,19 +364,18 @@ void Engine::updateUniforms()
 
 	this->shaders[0]->setUniformMat4("projection", this->ProjectionMatrix, false);
 	this->shaders[0]->setUniformMat4("view", this->ViewMatrix, false);
+	for (auto& i : this->models) 
+	{
+		glm::mat4 model;
+		model = glm::translate(model, i->position);
+		model = glm::scale(model, i->scale);
+		model = glm::rotate(model, Radian, glm::vec3(0.0f, 1.0f, 0.0f));
 
+		// Send updated uniform to shader program
+		this->shaders[0]->setUniformMat4("model", model, false);
+		i->Draw(*(this->shaders[0]));
+	}
 	// Transform the loaded model
-	glm::mat4 model;
-	model = glm::translate(model, this->models[0]->position); 
-	model = glm::scale(model, this->models[0]->scale);
-	model = glm::rotate(model, Radian, glm::vec3(0.0f,1.0f,0.0f));
-
-	// Update change_value for rotation
-	//Engine::change_value += 0.05f;
-
-	// Send updated uniform to shader program
-	this->shaders[0]->setUniformMat4("model", model, false);
-	//this->shaders[2]->setUniformMat4("model", glm::mat4(0.0f), false);
 
 	//Update framebuffer size and projection matrix
 	glfwGetFramebufferSize(this->window, &this->framebufferWidth, &this->framebufferHeight);
@@ -426,13 +427,7 @@ void Engine::initGround()
 	string path = "resources/textures/grass.png";
 	this->groundTexture = Model::loadTexture(path.c_str());
 
-	// -------------
-
-	// this->shaders[2]->use();
-	// glm::mat4 model = glm::mat4(1.0f);
-	// this->shaders[2]->setUniformMat4("model", model, false);
 }
-
 // Render function
 void Engine::render()
 {
@@ -456,8 +451,8 @@ void Engine::render()
 	//Update the uniforms : Send model, view, projection matrix to shader program
 	this->updateUniforms();
 	// Render models
-	for (auto& i : this->models)
-		i->Draw(*this->shaders[0]);	
+	/*for (auto& i : this->models)
+		i->Draw(*this->shaders[0]);*/
 	// this->shaders[0]->unUse();
 	glPopMatrix();
 	glBindVertexArray(0);
@@ -508,7 +503,7 @@ void Engine::render()
 
 	ImGuiRender();
 
-// End Draw
+	// End Draw
 	glfwSwapBuffers(window);
 	//glFlush();
 	glActiveTexture(0);
@@ -536,17 +531,12 @@ Engine::Engine(
 	WINDOW_HEIGHT(WINDOW_HEIGHT),
 	GL_VERSION_MAJOR(GL_VERSION_MAJOR),
 	GL_VERSION_MINOR(GL_VERSION_MINOR),
-	camera(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f))
+	camera(glm::vec3(0.f, 2.f, 5.f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f))
 {
 	// Init variables
 	this->window = nullptr;
 	this->framebufferWidth = this->WINDOW_WIDTH;
 	this->framebufferHeight = this->WINDOW_HEIGHT;
-
-	// Set up camera parameter
-	this->camPosition = glm::vec3(0.f, 0.f, 1.f);
-	this->worldUp = glm::vec3(0.f, 1.f, 0.f);
-	this->camFront = glm::vec3(0.f, 0.f, -1.f);
 
 	// Set up view-port
 	this->fov = 90.f;

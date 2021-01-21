@@ -33,9 +33,6 @@
     <ClCompile Include="sources\externals\imgui\imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sources\externals\imgui\imgui_demo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="sources\externals\imgui\imgui_draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,9 +42,6 @@
     <ClCompile Include="sources\externals\imgui\imgui_impl_opengl3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sources\externals\imgui\imgui_widgets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="sources\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -55,6 +49,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sources\Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\externals\imgui\imgui_widgets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\externals\imgui\imgui_tables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\externals\imgui\ImGuiFileDialog\ImGuiFileDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -554,10 +557,10 @@
     <ClInclude Include="sources\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sources\Texture.h">
+    <ClInclude Include="sources\Global_Variable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sources\Global_Variable.h">
+    <ClInclude Include="sources\externals\imgui\ImGuiFileDialog\ImGuiFileDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

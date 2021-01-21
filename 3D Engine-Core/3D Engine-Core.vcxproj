@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{4F1B7C44-6CDF-42C4-B86F-DE931F1108FE}</ProjectGuid>
     <RootNamespace>My3DEngineCore</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -142,10 +142,11 @@
   <ItemGroup>
     <ClCompile Include="sources\Engine.cpp" />
     <ClCompile Include="sources\externals\imgui\imgui.cpp" />
-    <ClCompile Include="sources\externals\imgui\imgui_demo.cpp" />
+    <ClCompile Include="sources\externals\imgui\ImGuiFileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="sources\externals\imgui\imgui_draw.cpp" />
     <ClCompile Include="sources\externals\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="sources\externals\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="sources\externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="sources\externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="sources\Mesh.cpp" />
     <ClCompile Include="sources\Model.cpp" />
@@ -309,6 +310,7 @@
     <ClInclude Include="sources\externals\glm\glm\vector_relational.hpp" />
     <ClInclude Include="sources\externals\imgui\imconfig.h" />
     <ClInclude Include="sources\externals\imgui\imgui.h" />
+    <ClInclude Include="sources\externals\imgui\ImGuiFileDialog\ImGuiFileDialog.h" />
     <ClInclude Include="sources\externals\imgui\imgui_impl_glfw.h" />
     <ClInclude Include="sources\externals\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="sources\externals\imgui\imgui_internal.h" />
@@ -322,7 +324,6 @@
     <ClInclude Include="sources\Mesh.h" />
     <ClInclude Include="sources\Model.h" />
     <ClInclude Include="sources\Shader.h" />
-    <ClInclude Include="sources\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\ground_vs.glsl" />

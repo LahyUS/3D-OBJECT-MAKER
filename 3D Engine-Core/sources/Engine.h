@@ -10,7 +10,6 @@
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_glfw.h"
 #include "../imgui/imgui_impl_opengl3.h"
-
 // Component
 #include "Camera.h"
 #include "Shader.h"
@@ -69,9 +68,6 @@ public:
 
 	//Matrices
 	glm::mat4 ViewMatrix;
-	glm::vec3 camPosition;
-	glm::vec3 worldUp;
-	glm::vec3 camFront;
 
 	glm::mat4 ProjectionMatrix;
 	float fov;
@@ -127,6 +123,7 @@ public:
 	void updateUniforms();
 
 	void initGround();
+
 
 public:
 	//Constructors / Destructors
